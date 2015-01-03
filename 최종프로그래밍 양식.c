@@ -16,7 +16,6 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-
 #define CS_MCP3208 6 //GPIO 6
 #define TEMPHUMI 1   //GPIO 1
 #define CHOOSEUART 2 //GPIO 2
@@ -30,7 +29,6 @@ int read_mcp3208_adc(unsigned char);
 
 int main(void)
 {
-	printf("Loading...");
 	/*/////////////////////////
 	//
 	// Setting Part
@@ -40,34 +38,28 @@ int main(void)
 	//Set Variable
 	int shm_id;
 	void *shm_addr;
-	printf("O");
 
 	int adcChannel = 0;
 	int adcValue = 0;
-	printf("O");
 
 	int dustPCS = 0;
 	float dustValue = 0;
 	int fd = serialOpen("/dev/ttyAMA0", 9600);
 	char send[] = { 0x11, 0x01, 0x01, 0xED };
 	char respone[15] = { 0, };
-	printf("O");
 
 	char bluesend[5] = {0,};
-	printf("O");
 
 	//Set GPIO, SPI, Shareing Variable
 	if (wiringPiSetup() == -1) return 1; //GPIO ON?
 	if (wiringPiSPISetup(SPI_CHANNEL, SPI_SPEED) == -1) return 1; //SPI ON?
 	if ((shm_id = shmget((key_t)KEY_NUM, MEM_SIZE, IPC_CREAT:0666) == -1)) return -1; //Create Share Var?
 	if ((shm_addr = shmat(shm_id, (void *)0, 0)) == -1) return -1; //Can Write Share Var?
-	printf("O");
 
 	//Set Pin Input or Output
 	pinMode(CS_MCP3208, OUTPUT);
 	pinMode(TEMPHUMI, INPUT);
 	pinMode(CHOOSEUART, OUTPUT);
-	printf("K!\n");
 
 
 

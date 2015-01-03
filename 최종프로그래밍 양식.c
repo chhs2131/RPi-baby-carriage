@@ -72,55 +72,55 @@ int main(void)
 	while (1){
 
 		//Gas Senser
-		{
-			adcValue = read_mcp3208_adc(adcChannel);
-			printf("adcValue = %u\n", adcValue);
-			if (adcValue >= 10000) bluesend[0] = 1;
-		}
+
+		adcValue = read_mcp3208_adc(adcChannel);
+		printf("adcValue = %u\n", adcValue);
+		if (adcValue >= 10000) bluesend[0] = 1;
+		
 
 		//Dust senser
-		{
-			digitalWrite(CHOOSEUART, 1) //relay Switch DUST
-			write(fd, send, 4);
-			read(fd, respone, 7);
+		
+		digitalWrite(CHOOSEUART, 1) //relay Switch DUST
+		write(fd, send, 4);
+		read(fd, respone, 7);
 	
-			if (respone[0] = 0x16) // Success
-			{
-				dustPCS = respone[3] * 256 * 256 * 256 + respone[4] * 256 * 256 + respone[5] * 256 + respone[6];
-				dustValue = ((float)(dustPCS * 3528)) / 100000;
-				printf(" Now! Dust : %f\n", dustValue);
-				if (dustValue >= 10000) bluesend[1] = 3;
-				else if (dustValue >= 7000) bluesend[1] = 2;
-				else if (dustValue >= 5000) bluesend[1] = 1;
-				else bluesend[1] = 0;
-			}
-			else if (respone[0] = 0x06) // Failed
-			{
-				printf("Hey! I Fail to Receive..\n");
-			continue;
-			}
-			else printf("Can't connected Dust Senser..\n");
-			
-			serialClose(fd);
+		if (respone[0] = 0x16) // Success
+		{
+			dustPCS = respone[3] * 256 * 256 * 256 + respone[4] * 256 * 256 + respone[5] * 256 + respone[6];
+			dustValue = ((float)(dustPCS * 3528)) / 100000;
+			printf(" Now! Dust : %f\n", dustValue);
+			if (dustValue >= 10000) bluesend[1] = 3;
+			else if (dustValue >= 7000) bluesend[1] = 2;
+			else if (dustValue >= 5000) bluesend[1] = 1;
+			else bluesend[1] = 0;
 		}
+		else if (respone[0] = 0x06) // Failed
+		{
+			printf("Hey! I Fail to Receive..\n");
+			continue;
+		}
+		else printf("Can't connected Dust Senser..\n");
+			
+		serialClose(fd);
+		
 
 		//Temp&Humi Senser
-		{
-			if (dustValue >= 10000) bluesend[2] = 3; //////
-		}
+		
+		if (dustValue >= 10000) bluesend[2] = 3; //////
+		
 
 		//Light Senser
-		{
-			printf("Light : %d\n", *(volatile int *)shm_addr);
-			if (bluesend[3] < 255) bluesend[3] = *(volatile int *)shm_addr;
-			else bluesend[4] += 1;
-		}
+		
+		printf("Light : %d\n", *(volatile int *)shm_addr);
+		if (bluesend[3] < 255) bluesend[3] = *(volatile int *)shm_addr;
+		else bluesend[4] += 1;
+		
 
 		//Bluetooth
-		{
-			digitalWrite(CHOOSEUART, 0) //relay Switch Blue
-			write(fd, bluesend, 5);
-		}
+		
+		digitalWrite(CHOOSEUART, 0) //relay Switch Blue
+		write(fd, bluesend, 5);
+		
 
 	}
 	return 0;

@@ -76,6 +76,7 @@ int main(void)
 		adcValue = read_mcp3208_adc(adcChannel);
 		printf("adcValue = %u\n", adcValue);
 		if (adcValue >= 10000) bluesend[0] = 1;
+		else bluesend[0] = 0;
 		
 
 		//Dust senser
@@ -112,7 +113,7 @@ int main(void)
 		//Light Senser
 		
 		printf("Light : %d\n", *(volatile int *)shm_addr);
-		if (bluesend[3] < 255) bluesend[3] = *(volatile int *)shm_addr;
+		if (bluesend[3] < 256) bluesend[3] = *(volatile int *)shm_addr;
 		else bluesend[4] += 1;
 		
 
@@ -124,4 +125,26 @@ int main(void)
 
 	}
 	return 0;
+}
+
+
+int read_mcp3208_adc(unsigned char adcChannel)
+{
+  unsigned char buff[3];
+  int adcValue = 0;
+
+  buff[0] = 0x06 | ((adcChannel & 0x07) >> 2);
+  buff[1] = ((adcChannel & 0x07) << 6);
+  buff[2] = 0x00;
+
+  digitalWrite(CS_MCP3208, 0);  // Low : CS Active
+
+  wiringPiSPIDataRW(SPI_CHANNEL, buff, 3);
+
+  buff[1] = 0x0F & buff[1];
+  adcValue = ( buff[1] << 8) | buff[2];
+
+  digitalWrite(CS_MCP3208, 1);  // High : CS Inactive
+
+  return adcValue;
 }

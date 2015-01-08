@@ -81,7 +81,7 @@ int main(void)
 
 		//Dust senser
 		
-		digitalWrite(CHOOSEUART, 1) //relay Switch DUST
+		digitalWrite(CHOOSEUART, 1); //relay Switch DUST
 		write(fd, send, 4);
 		read(fd, respone, 7);
 	
@@ -119,7 +119,7 @@ int main(void)
 
 		//Bluetooth
 		
-		digitalWrite(CHOOSEUART, 0) //relay Switch Blue
+		digitalWrite(CHOOSEUART, 0); //relay Switch Blue
 		write(fd, bluesend, 5);
 		
 
